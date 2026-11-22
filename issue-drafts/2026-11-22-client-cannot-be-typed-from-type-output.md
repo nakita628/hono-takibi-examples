@@ -1,7 +1,8 @@
 ---
-status: draft
+status: filed
 target: nakita628/hono-takibi
-issue:
+issue: 498
+filed: https://github.com/nakita628/hono-takibi/issues/498
 related: [2026-11-22-template-handler-stubs-do-not-typecheck.md]
 apps: [train-travel-client]
 reproduced-on: hono-takibi 0.32.6 (and 0.32.5)

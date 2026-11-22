@@ -1,7 +1,8 @@
 ---
-status: draft
+status: filed
 target: nakita628/hono-takibi
-issue:
+issue: 499
+filed: https://github.com/nakita628/hono-takibi/issues/499
 related: []
 apps: [ethereum-beacon-api]
 reproduced-on: hono-takibi 0.32.6 (also 0.32.5 and 0.32.0)

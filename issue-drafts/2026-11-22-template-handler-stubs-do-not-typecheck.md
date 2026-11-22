@@ -1,7 +1,8 @@
 ---
-status: draft
+status: filed
 target: nakita628/hono-takibi
-issue:
+issue: 497
+filed: https://github.com/nakita628/hono-takibi/issues/497
 related: [2026-11-22-client-cannot-be-typed-from-type-output.md]
 apps: [train-travel-client]
 reproduced-on: hono-takibi 0.32.6 (default template); routeHandler and define variants seen on 0.32.5

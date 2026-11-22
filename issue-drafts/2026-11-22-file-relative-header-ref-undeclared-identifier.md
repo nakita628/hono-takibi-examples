@@ -1,7 +1,8 @@
 ---
-status: draft
+status: filed
 target: nakita628/hono-takibi
-issue:
+issue: 500
+filed: https://github.com/nakita628/hono-takibi/issues/500
 related: []
 apps: [ethereum-beacon-api]
 reproduced-on: hono-takibi 0.32.5 and 0.32.6 with @apidevtools/json-schema-ref-parser 16.0.5; not with 16.0.8

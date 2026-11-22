@@ -1,7 +1,8 @@
 ---
-status: draft
+status: filed
 target: nakita628/hono-takibi
-issue:
+issue: 406
+filed: https://github.com/nakita628/hono-takibi/issues/406#issuecomment-7075669293
 related: [406]
 apps: [iceberg-rest-catalog, apache-gravitino (candidate, not added yet)]
 reproduced-on: hono-takibi 0.32.6 (also 0.32.5 and 0.32.0)

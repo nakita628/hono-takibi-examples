@@ -7,10 +7,10 @@ export default defineConfig({
   output: './src/routes.ts',
   // The client is typed by the app the template scaffolds (src/index.ts), so rpc and the hooks need it.
   // The handler stubs in src/handlers are filled with `throw new Error('Not implemented')` so the app
-  // typechecks; hono-takibi keeps handler bodies when it regenerates.
+  // typechecks (nakita628/hono-takibi#497); hono-takibi keeps handler bodies when it regenerates.
   template: {},
   // Types of the whole API. The client cannot be typed from this file yet: `client.import: './types'`
-  // imports `{ api }`, which types.ts does not export (issue-drafts/2026-11-22-client-cannot-be-typed-from-type-output.md).
+  // imports `{ api }`, which types.ts does not export (nakita628/hono-takibi#498).
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   // RPC functions that wrap each call in parseResponse(); configs/response.config.ts writes the variant without it.

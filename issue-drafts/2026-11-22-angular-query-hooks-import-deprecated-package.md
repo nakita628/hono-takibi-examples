@@ -1,7 +1,8 @@
 ---
-status: draft
+status: filed
 target: nakita628/hono-takibi
-issue:
+issue: 501
+filed: https://github.com/nakita628/hono-takibi/issues/501
 related: []
 apps: [train-travel-client]
 reproduced-on: hono-takibi 0.32.6
