@@ -4,7 +4,7 @@ target: nakita628/hono-takibi
 issue:
 related: []
 apps: [ethereum-beacon-api]
-reproduced-on: hono-takibi 0.32.5 (and 0.32.0)
+reproduced-on: hono-takibi 0.32.6 (also 0.32.5 and 0.32.0)
 date: 2026-11-22
 ---
 
@@ -72,7 +72,7 @@ components:
 ```
 
 ```bash
-npx hono-takibi@0.32.5 openapi.yaml -o routes.ts
+npx hono-takibi@0.32.6 openapi.yaml -o routes.ts
 ```
 
 ## Expected
@@ -108,15 +108,16 @@ bundling, has 61 distinct `$ref` targets that point deeper than a component root
 
 ## Possibly related, not reduced
 
-The generated `routes.ts` for the Beacon API also has 22 `tsc` errors for 6 names that are used but never
-declared (`ItemsSchema` x9, `SchemaSchema` x8, `_0Schema` x2, `ExecutionPayloadSchema`,
-`ExecutionBranchSchema`, `Attestation_1Schema`). They look like the last segment of a pointer, which
-suggests the same area of code. I could not reproduce them with a smaller document, so this issue is only
-about the case above.
+The generated `routes.ts` for the Beacon API also has names that are used but never declared. With
+hono-takibi 0.32.6 and `@apidevtools/json-schema-ref-parser` 16.0.8 that is 18 `tsc` errors for 5 names
+(`ItemsSchema` x12, `_0Schema` x2, `Attestation_1Schema` x2, `ExecutionPayloadSchema`,
+`ExecutionBranchSchema`), plus one TS2375 on a recursive schema. They look like the last segment of a
+pointer, which suggests the same area of code. I could not reproduce them with a smaller document, so this
+issue is only about the case above.
 
 ## Environment
 
-- hono-takibi 0.32.5 (also reproduced on 0.32.0), Node.js 22, Linux
+- hono-takibi 0.32.6 (also reproduced on 0.32.5 and 0.32.0), Node.js 22, Linux
 - Real-world case: https://github.com/ethereum/beacon-APIs/blob/0ed12552077c9927ba2599ee632e76b2caf021d7/beacon-node-oapi.yaml
   (example app: `apps/ethereum-beacon-api` in nakita628/hono-takibi-examples)
 

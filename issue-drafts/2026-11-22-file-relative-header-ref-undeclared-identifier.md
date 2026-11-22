@@ -4,19 +4,32 @@ target: nakita628/hono-takibi
 issue:
 related: []
 apps: [ethereum-beacon-api]
-reproduced-on: hono-takibi 0.32.5 (and 0.32.0)
+reproduced-on: hono-takibi 0.32.5 and 0.32.6 with @apidevtools/json-schema-ref-parser 16.0.5; not with 16.0.8
 date: 2026-11-22
+note: >
+  Whether this shows up depends on the json-schema-ref-parser version in the user's lockfile, not on the
+  hono-takibi version. hono-takibi-examples moved to 16.0.8 on 2026-11-22, so the repo no longer hits it.
+  File it as "fragile handling of file-relative refs" rather than as a regression.
 ---
 
-# Response header `$ref` that points back to the root document generates an undeclared identifier
+# Response header `$ref` that points back to the root document generates an undeclared identifier (with json-schema-ref-parser 16.0.5)
 
 ## Summary
 
 When a response header is a `$ref` to `components.headers` written as a file-relative reference to the
-root document (`../openapi.yaml#/components/headers/X-Version`), the generated route uses
+root document (`../openapi.yaml#/components/headers/X-Version`), the generated route can use
 `XVersionSchema`, which is never declared. The component itself is declared as `XVersionHeaderSchema`.
 
-A plain `#/components/headers/X-Version` in the same file works (see "Contrast").
+It depends on the version of `@apidevtools/json-schema-ref-parser` that gets installed:
+
+| json-schema-ref-parser | header `$ref` after `bundle()` | generated |
+| --- | --- | --- |
+| 16.0.5 | `../openapi.yaml#/components/headers/X-Version` (file-relative, kept) | `XVersionSchema` (undeclared) |
+| 16.0.8 | `#/components/headers/X-Version` | `XVersionHeaderSchema` (correct) |
+
+Only these two versions were measured. hono-takibi 0.32.6 depends on `@apidevtools/swagger-parser ^13.1.0`,
+which depends on `@apidevtools/json-schema-ref-parser ^16.0.3`, so both are valid installs. A lockfile made
+before 16.0.8 was published (2026-11-12) can keep 16.0.5: hono-takibi-examples did.
 
 ## Reproduction
 
@@ -54,11 +67,20 @@ get:
           $ref: '../openapi.yaml#/components/headers/X-Version'
 ```
 
-```bash
-npx hono-takibi@0.32.5 openapi.yaml -o routes.ts
+Install hono-takibi 0.32.6 with json-schema-ref-parser pinned to 16.0.5, for example through `overrides`
+in `package.json`:
+
+```json
+{ "overrides": { "@apidevtools/json-schema-ref-parser": "16.0.5" } }
 ```
 
-## Actual
+```bash
+npx hono-takibi openapi.yaml -o routes.ts
+```
+
+(Observed with a bun lockfile that resolved 16.0.5; the override above is one way to get the same install.)
+
+## Actual (json-schema-ref-parser 16.0.5)
 
 ```ts
 const VersionSchema = z.enum(['v1', 'v2']).openapi('Version')
@@ -76,33 +98,30 @@ export const getARoute = createRoute({
 
 ## Expected
 
-`'X-Version': XVersionHeaderSchema`
+`'X-Version': XVersionHeaderSchema`, which is what 16.0.8 gives, and what a plain
+`$ref: '#/components/headers/X-Version'` in a single file gives with either version.
 
-## Contrast
+## Suggestion
 
-The same document as a single file, with `$ref: '#/components/headers/X-Version'` on the response,
-generates `'X-Version': XVersionHeaderSchema` and compiles.
-
-The bundler keeps the file-relative form: after `bundle()` the header's `$ref` is still
-`../openapi.yaml#/components/headers/X-Version`, so it is not recognised as a `components.headers`
-reference and falls back to a name built from the last path segment.
+A `$ref` that is still file-relative after bundling falls back to a name built from its last segment.
+Resolving it like a `#/components/...` reference, or requiring a json-schema-ref-parser that rewrites it
+(for example a direct dependency with a `>=16.0.8` floor), would make the output independent of the lockfile.
 
 ## Real-world case
 
 Ethereum's Beacon API (`apis/**/*.yaml` refer back to `../../beacon-node-oapi.yaml#/components/headers/...`).
-After bundling there are 30 such header `$ref`s (6 distinct headers), and `tsc --noEmit` reports 30 of its
-54 errors for them:
+With 16.0.5 there are 30 such header `$ref`s (6 distinct headers) and they cause 30 of the 54 `tsc` errors,
+for example:
 
 ```
 src/routes.ts(6733,52): error TS2552: Cannot find name 'EthConsensusVersionSchema'. Did you mean 'ConsensusVersionSchema'?
 ```
 
-Also affected: `EthExecutionPayloadValueSchema`, `EthConsensusBlockValueSchema`,
-`EthExecutionPayloadIncludedSchema`, `EthExecutionPayloadBlindedSchema`.
+With 16.0.8 and hono-takibi 0.32.6 those 30 errors are gone (19 remain, from other causes).
 
 ## Environment
 
-- hono-takibi 0.32.5 (also reproduced on 0.32.0), Node.js 22, Linux
+- hono-takibi 0.32.5 and 0.32.6, `@apidevtools/swagger-parser` 13.1.0, Node.js 22, Linux
 - Document: https://github.com/ethereum/beacon-APIs/blob/0ed12552077c9927ba2599ee632e76b2caf021d7/beacon-node-oapi.yaml
   (example app: `apps/ethereum-beacon-api` in nakita628/hono-takibi-examples)
 

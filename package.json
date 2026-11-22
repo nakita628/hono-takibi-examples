@@ -8,11 +8,27 @@
       "packages/*"
     ],
     "catalog": {
+      "@angular/common": "^22.3.0",
+      "@angular/core": "^22.3.0",
       "@hono/zod-openapi": "^1.6.3",
+      "@tanstack/angular-query-experimental": "^5.107.2",
+      "@tanstack/preact-query": "^5.108.2",
+      "@tanstack/react-query": "^5.108.2",
+      "@tanstack/solid-query": "^5.108.2",
+      "@tanstack/svelte-query": "^6.4.5",
+      "@tanstack/vue-query": "^5.108.2",
       "@types/node": "^26.6.5",
+      "@types/react": "^19.3.0",
       "hono": "^4.13.13",
-      "hono-takibi": "^0.32.5",
+      "hono-takibi": "^0.32.6",
+      "preact": "^11.2.0",
+      "react": "^19.3.1",
+      "rxjs": "^7.8.2",
+      "solid-js": "^2.0.3",
+      "svelte": "^5.59.1",
+      "swr": "^2.5.1",
       "typescript": "^7.0.2",
+      "vue": "^3.5.46",
       "zod": "^4.6.7"
     }
   },

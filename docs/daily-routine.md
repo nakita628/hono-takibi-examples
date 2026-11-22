@@ -199,6 +199,19 @@ git push origin HEAD:main                            # fast-forward だけ。for
 - push が拒否されたら、fetch → rebase → push を最大 3 回。それでも通らなければ止めて報告する。
 - main への push で CI が走る。完了を待たない。結果は翌日の 0 で見る。
 
+## クライアント側の出力（RPC・hooks・client）
+
+見本は `apps/train-travel-client`。hono-takibi のクライアント側の出力をすべて出している:
+RPC（`parseResponse` あり・なしの 2 版）、7 ライブラリの hooks、`type`、`client`。
+
+- `rpc` と hooks は `client` を、`client` は `template` を必要とする（`client needs template`）。
+- 1 つの config に `rpc` は 1 つなので、`parseResponse` の 2 版は config を 2 つに分け、`generate` を `&&` でつなぐ。
+- template のハンドラの雛形（`(c) => {}`）は typecheck が通らない。本体に `throw new Error('Not implemented')` を入れる。
+  hono-takibi は再生成してもハンドラ本体を保つ（2 回の再生成で確認済み）。
+- `type` の出力から型推論する client は、まだ生成できない（`client.import: './types'` は TS2614）。[issue-drafts/](../issue-drafts/) 参照。
+- hooks の typecheck に要るライブラリは、ルートの catalog にある（SWR と、React / Preact / Solid / Vue / Svelte / Angular の TanStack Query）。
+- 生成物は routes.ts の約 6.5 倍になる（Memos で計測）。日次で足す app には入れない。入れる範囲は持ち主が決める。
+
 ## 守ること
 
 - 追加する app は 1 日に最大 3 件。

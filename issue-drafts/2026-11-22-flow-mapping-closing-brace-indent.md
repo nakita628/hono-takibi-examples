@@ -4,7 +4,7 @@ target: nakita628/hono-takibi
 issue:
 related: [406]
 apps: [iceberg-rest-catalog, apache-gravitino (candidate, not added yet)]
-reproduced-on: hono-takibi 0.32.5 (and 0.32.0)
+reproduced-on: hono-takibi 0.32.6 (also 0.32.5 and 0.32.0)
 date: 2026-11-22
 note: >
   Probably the same cause as #406, which the README of nakita628/hono-takibi-examples describes as a flow
